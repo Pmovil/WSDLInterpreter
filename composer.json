@@ -1,10 +1,12 @@
 {
-    "name": "vendor/wsdl-interpreter",
+    "name": "pmovil/wsdl-interpreter",
     "description": "Provide wsdl2php conversion",
     "authors": [
         {
             "name": "Kevin Vaughan"
         }
     ],
-    "require": {}
+    "require": {
+        
+    }
 }
