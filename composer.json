@@ -6,7 +6,7 @@
             "name": "Kevin Vaughan"
         }
     ],
-    "require": {
-        
+    "autoload": {
+        "classmap": ["WSDLInterpreter.class.php"]
     }
 }
