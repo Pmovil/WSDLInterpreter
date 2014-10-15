@@ -429,7 +429,7 @@ class WSDLInterpreter
         $return .= ' * '.$service->getAttribute("validatedName")."\n";
         $return .= ' * @author WSDLInterpreter'."\n";
         $return .= ' */'."\n";
-        $return .= "class ".$service->getAttribute("validatedName")." extends SoapClient {\n";
+        $return .= "class ".$service->getAttribute("validatedName")." extends \\SoapClient {\n";
 
         if (sizeof($this->_classmap) > 0) {
             $return .= "\t".'/**'."\n";
@@ -622,4 +622,4 @@ class WSDLInterpreter
         return $outputFiles;
     }
 }
-?>
+
