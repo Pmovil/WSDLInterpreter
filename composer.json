@@ -6,6 +6,9 @@
             "name": "Kevin Vaughan"
         }
     ],
+    "require": {
+        "ext-xmlreader": "*"
+    },
     "autoload": {
         "classmap": ["WSDLInterpreter.class.php"]
     }
