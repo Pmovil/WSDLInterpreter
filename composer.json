@@ -10,6 +10,9 @@
         "ext-xmlreader": "*",
         "ext-xsl": "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.3.*"
+    },    
     "autoload": {
         "classmap": ["WSDLInterpreter.class.php"]
     }

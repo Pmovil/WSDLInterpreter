@@ -59,6 +59,10 @@ class WSDLInterpreterException extends Exception { }
  */
 class WSDLInterpreter 
 {
+    
+    const BASE_NAMESPACE = 'WSDLI';
+    const STUBS_NAMESPACE = 'WSDLI\\Stubs';
+    
     /**
      * The WSDL document's URI
      * @var string
@@ -215,7 +219,7 @@ class WSDLInterpreter
         }
         
         if ($addToClassMap) {
-            $this->_classmap[$className] = $validClassName;
+            $this->_classmap[$className] = self::STUBS_NAMESPACE.'\\'.$validClassName;
         }
         
         return $validClassName;
@@ -333,7 +337,7 @@ class WSDLInterpreter
      */
     protected function _generateClassPHP($class) 
     {
-        $return = 'namespace WSDLI;'."\n\n";
+        $return = 'namespace '.self::STUBS_NAMESPACE.';'."\n\n";
         $return .= '/**'."\n";
         $return .= ' * '.$class->getAttribute("validatedName")."\n";
         $return .= ' */'."\n";
@@ -414,7 +418,7 @@ class WSDLInterpreter
                 }
             }
             
-			$this->_servicePHPSources[$service->getAttribute("validatedName")] = $this->_generateServicePHP($service);
+            $this->_servicePHPSources[$service->getAttribute("validatedName")] = $this->_generateServicePHP($service);
         }
     }
     
@@ -433,7 +437,7 @@ class WSDLInterpreter
      */
     protected function _generateServicePHP($service) 
     {
-        $return = 'namespace WSDLI;'."\n\n";
+        $return = 'namespace '.self::BASE_NAMESPACE.';'."\n\n";
         $return .= '/**'."\n";
         $return .= ' * '.$service->getAttribute("validatedName")."\n";
         $return .= ' * @author WSDLInterpreter'."\n";
@@ -448,7 +452,7 @@ class WSDLInterpreter
             $return .= "\t".' */'."\n";
             $return .= "\t".'private static $classmap = array('."\n";
             foreach ($this->_classmap as $className => $validClassName)    {
-                $return .= "\t\t".'"'.$className.'" => "'.$validClassName.'",'."\n";
+                $return .= "\t\t".'"'.$className.'" => "'.str_replace('\\', '\\\\', $validClassName).'",'."\n";
             }
             $return .= "\t);\n\n";
         }
@@ -604,23 +608,26 @@ class WSDLInterpreter
         
         $outputFiles = array();
         
-        if(!is_dir($outputDirectory."/")) {
-            mkdir($outputDirectory."/");
+        $baseNsDir = $outputDirectory.'/'.str_replace('\\', '/', self::BASE_NAMESPACE).'/';
+        $stubsNsDir = $outputDirectory.'/'.str_replace('\\', '/', self::STUBS_NAMESPACE).'/';
+        
+        if(!is_dir($baseNsDir)) {
+            mkdir($baseNsDir, 0777, true);
         }
         
-        if(!is_dir($outputDirectory."/classes/")) {
-            mkdir($outputDirectory."/classes/");
+        if(!is_dir($stubsNsDir)) {
+            mkdir($stubsNsDir, 0777, true);
         }
         
         foreach($this->_classPHPSources as $className => $classCode) {
-            $filename = $outputDirectory."/classes/".$className.".class.php";
+            $filename = $stubsNsDir.$className.".class.php";
             if (file_put_contents($filename, "<?php\n\n".$classCode)) {
                 $outputFiles[] = $filename;
             }
         }
         
         foreach ($this->_servicePHPSources as $serviceName => $serviceCode) {
-            $filename = $outputDirectory."/".$serviceName.".php";
+            $filename = $baseNsDir."/".$serviceName.".php";
             if (file_put_contents($filename, "<?php\n\n".$serviceCode)) {
                 $outputFiles[] = $filename;
             }
