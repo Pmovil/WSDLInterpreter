@@ -620,7 +620,7 @@ class WSDLInterpreter
         }
         
         foreach($this->_classPHPSources as $className => $classCode) {
-            $filename = $stubsNsDir.$className.".class.php";
+            $filename = $stubsNsDir.$className.".php";
             if (file_put_contents($filename, "<?php\n\n".$classCode)) {
                 $outputFiles[] = $filename;
             }
